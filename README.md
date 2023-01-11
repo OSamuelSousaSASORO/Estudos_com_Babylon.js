@@ -1,2 +1,3 @@
-# Estudos_com_three.js
-Repositório pessoal para estudos da biblioteca Babylonjs que consegue criar objetos 3d no navegador.
+# Estudos_com_ReactThreeFiber.js
+Repositório pessoal para estudos da biblioteca ReactThreeFiber que consegue recriar modelos 3d.
+Parece ser menos custoso na manutenção em comparação com o Three.Js e Babylon.Js.
