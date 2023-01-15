@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import { Canvas, useThree } from '@react-three/fiber'
+import React, {useEffect, useRef} from "react";
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default function Ex1() {
@@ -14,18 +14,39 @@ export default function Ex1() {
               return () => {
                 controls.dispose();
               };
-           },
-           [camera, gl]
+           },[camera, gl]
         );
         return null;
      };
+
+     /*
+     Iremos começar nosso código aqui em baixo:
+     Comecaremos pela animação chamando useFrame do react-three/fiber
+     */
+
+     function MyAnimatedBox() {
+        const mymesh = useRef()
+
+        useFrame(({ clock }) => {
+            mymesh.current.rotation.x = clock.getElapsedTime()
+            mymesh.current.rotation.y = clock.getElapsedTime()
+        })
+
+        return (
+          <mesh ref={mymesh}>
+            <boxGeometry />
+            <meshBasicMaterial color="green" args={[1, 2, 10]}/>
+          </mesh>
+        )
+    }
 
     return(
         <>
             <Canvas>
             <perspectiveCamera position={[0,50,0]} near={4.9} far={5}></perspectiveCamera>
 
-            <ambientLight args={['#ffffff', 0.5]}></ambientLight>
+            <ambientLight intensity={0.1} />
+            <directionalLight position={[0, 10, 5]} color="red" />
                 <mesh>
                 <sphereGeometry args={[3, 10, 9]}></sphereGeometry>
                 <meshStandardMaterial color='red'/>
@@ -42,8 +63,12 @@ export default function Ex1() {
             <Canvas> é Equvalente a const renderer = new THREE.WebGLRenderer({canvas}); 
             camera propriedade é equivalente a const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);*/}
             <Canvas>
+                {/*Criando a iluminação para poder ver melhor a animação 3d criada */}
+                <ambientLight intensity={0.1} />
+                <directionalLight position={[0, 0, 5]} color="red" />
+
                 {/*Usado para adicionar um laço entre os objetos que serão renderizados dentro dele */}
-                <mesh>
+                <mesh position={[3,-1,0]}>
                     {/*
                     boxgeometry é equivalente a:
                     const boxWidth = 1;
@@ -56,6 +81,9 @@ export default function Ex1() {
                     const material = new THREE.MeshBasicMaterial({color: 0x44aa88});*/}
                     <meshBasicMaterial color='green'></meshBasicMaterial>
                 </mesh>
+                {/* Chamando a animação que foi definida la na parte de cima.*/}
+                <MyAnimatedBox></MyAnimatedBox>
+                <CameraController/>
             </Canvas>
         </>
     )
